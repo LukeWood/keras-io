@@ -274,19 +274,7 @@ model.compile(
     classification_loss=keras_cv.losses.FocalLoss(from_logits=True, reduction="none"),
     box_loss=keras_cv.losses.SmoothL1Loss(l1_cutoff=1.0, reduction="none"),
     optimizer=optimizer,
-    metrics=[
-        keras_cv.metrics.COCOMeanAveragePrecision(
-            class_ids=range(20),
-            bounding_box_format="xywh",
-            name="Mean Average Precision",
-        ),
-        keras_cv.metrics.COCORecall(
-            class_ids=range(20),
-            bounding_box_format="xywh",
-            max_detections=100,
-            name="Recall",
-        ),
-    ],
+    metrics=[metrics],
 )
 
 """
@@ -295,7 +283,7 @@ Next, we can construct some callbacks:
 
 callbacks = [
     keras.callbacks.TensorBoard(log_dir="logs"),
-    keras.callbacks.ReduceLROnPlateau(patience=5, monitor='loss'),
+    keras.callbacks.ReduceLROnPlateau(patience=5, monitor="loss"),
     # Uncomment to train your own RetinaNet
     keras.callbacks.ModelCheckpoint(CHECKPOINT_PATH, save_weights_only=True),
 ]
@@ -306,7 +294,7 @@ And run `model.fit()`!
 
 model.fit(
     train_ds,
-    # validation_data=val_ds.take(20),
+    validation_data=val_ds.take(20),
     epochs=EPOCHS,
     callbacks=callbacks,
 )
