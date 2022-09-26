@@ -140,10 +140,13 @@ val_ds, val_dataset_info = keras_cv.datasets.pascal_voc.load(
 random_flip = keras_cv.layers.RandomFlip(mode="horizontal", bounding_box_format="xywh")
 rand_augment = keras_cv.layers.RandAugment(
     value_range=(0, 255),
+    # tune down RandAugment's magnitude a bit for object detection
+    magnitude=0.3,
     augmentations_per_image=2,
     # we disable geometric augmentations for object detection tasks
     geometric=False,
 )
+mosaic = keras_cv.layers.Mosaic(bounding_box_format="xywh")
 
 
 def augment(inputs):
@@ -151,6 +154,7 @@ def augment(inputs):
     # bounding box detection
     inputs["images"] = rand_augment(inputs["images"])
     inputs = random_flip(inputs)
+    inputs = mosaic(inputs)
     return inputs
 
 
