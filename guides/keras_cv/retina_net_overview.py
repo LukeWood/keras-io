@@ -295,7 +295,7 @@ Next, we can construct some callbacks:
 
 callbacks = [
     keras.callbacks.TensorBoard(log_dir="logs"),
-    keras.callbacks.ReduceLROnPlateau(patience=5),
+    keras.callbacks.ReduceLROnPlateau(patience=5, monitor='loss'),
     # Uncomment to train your own RetinaNet
     keras.callbacks.ModelCheckpoint(CHECKPOINT_PATH, save_weights_only=True),
 ]
@@ -306,11 +306,10 @@ And run `model.fit()`!
 
 model.fit(
     train_ds,
-    validation_data=val_ds.take(20),
+    # validation_data=val_ds.take(20),
     epochs=EPOCHS,
     callbacks=callbacks,
 )
-model.save_weights(CHECKPOINT_PATH)
 
 """
 Next, we can evaluate the metrics by re-compiling the model, and running
