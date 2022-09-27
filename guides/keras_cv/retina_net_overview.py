@@ -293,8 +293,12 @@ And run `model.fit()`!
 """
 
 model.fit(
-    train_ds,
-    # validation_data=val_ds.take(20),
+    train_ds.repeat(5),
+    # COCO metric evaluation is really expensive, so to maintain optimal
+    # performance we repeat our training dataset a few times per epoch
+    # and only evaluate the metrics for a tiny subset of
+    # the validation data.
+    validation_data=val_ds.take(20),
     epochs=EPOCHS,
     callbacks=callbacks,
 )
